@@ -36,6 +36,17 @@ namespace TheWorld.Models
             _context.Add(trip);
         }
 
+        public void AddStop(string tripName, Stop newStop)
+        {
+            var trip = GetTripByName(tripName);
+
+            if (trip != null)
+            {
+                trip.Stops.Add(newStop);
+                _context.Stops.Add(newStop);
+            }
+        }
+
         public async Task<bool> SaveChangesAsync()
         {
             return (await _context.SaveChangesAsync()) > 0;
