@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using System;
 using TheWorld.Models;
 using TheWorld.Services;
 using TheWorld.ViewModels;
@@ -15,8 +16,8 @@ namespace TheWorld.Controllers.Web
         private readonly IWorldRepository _repository;
         private readonly ILogger<AppController> _logger;
 
-        public AppController(IMailService mailService, 
-            IConfigurationRoot config, 
+        public AppController(IMailService mailService,
+            IConfigurationRoot config,
             IWorldRepository repository,
             ILogger<AppController> logger)
         {
@@ -27,6 +28,12 @@ namespace TheWorld.Controllers.Web
         }
         public IActionResult Index()
         {
+            return View();
+        }
+
+        [Authorize]
+        public IActionResult Trips()
+        {
             try
             {
                 var data = _repository.GetAllTrips();
@@ -35,9 +42,9 @@ namespace TheWorld.Controllers.Web
             }
             catch (Exception ex)
             {
-                _logger.LogError("Failed to get trips in Index page: {ex.Message}");
+                _logger.LogError($"Failed to get trips in Index page: {ex.Message}");
                 return Redirect("/error");
-            }
+            }            
         }
 
         public IActionResult Contact()
