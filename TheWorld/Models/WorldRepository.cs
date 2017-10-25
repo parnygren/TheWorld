@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace TheWorld.Models
 {
@@ -24,6 +24,15 @@ namespace TheWorld.Models
             return _context.Trips.ToList();
         }
 
+        public IEnumerable<Trip> GetTripsByUsername(string username)
+        {
+            return _context
+                .Trips
+                .Include(t => t.Stops)
+                .Where(t => t.UserName == username)
+                .ToList();
+        }
+
         public Trip GetTripByName(string tripName)
         {
             return _context.Trips
@@ -31,20 +40,23 @@ namespace TheWorld.Models
                 .FirstOrDefault(t => t.Name == tripName);
         }
 
+        public Trip GetUserTripByName(string tripName, string username)
+        {
+            return _context.Trips
+                .Include(t => t.Stops)
+                .FirstOrDefault(t => t.Name == tripName && t.UserName == username);
+        }
+
         public void AddTrip(Trip trip)
         {
             _context.Add(trip);
         }
 
-        public void AddStop(string tripName, Stop newStop)
+        public void AddStop(string tripName, Stop newStop, string username)
         {
-            var trip = GetTripByName(tripName);
+            var trip = GetUserTripByName(tripName, username);
 
-            if (trip != null)
-            {
-                trip.Stops.Add(newStop);
-                _context.Stops.Add(newStop);
-            }
+            trip?.Stops.Add(newStop);
         }
 
         public async Task<bool> SaveChangesAsync()
