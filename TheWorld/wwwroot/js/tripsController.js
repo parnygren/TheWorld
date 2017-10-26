@@ -8,6 +8,14 @@
 
   function tripsController() {
     var vm = this;
-    vm.name = "Pär";
+    vm.trips = [
+      {
+        name: "US Trip",
+        created: new Date()
+      },
+      {
+        name: "World Trip",
+        created: new Date()
+      }];
   }
 })();
