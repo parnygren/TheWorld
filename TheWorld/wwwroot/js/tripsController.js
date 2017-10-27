@@ -15,18 +15,30 @@
 
     $http.get("/api/trips")
       .then(function (response) {
-        // Success
         angular.copy(response.data, vm.trips);
       },
       function (error) {
-        // Failure
         vm.errorMessage = "Failed to load data: " + error;
       })
       .finally(function () {
         vm.isBusy = false;
       });
+
     vm.addTrip = function () {
-      vm.trips.push({ name: vm.newTrip.name, created: new Date() });
+      vm.errorMessage = "";
+      vm.isBusy = true;
+
+      $http.post("/api/trips", vm.newTrip)
+        .then(function (response) {
+          vm.trips.push(response.data);
+            vm.newTrip = {};
+          },
+        function () {
+          vm.errorMessage = "Failed to save new trip";
+        })
+        .finally(function() {
+          vm.isBusy = false;
+        });      
       vm.newTrip = {};
     };
   }
