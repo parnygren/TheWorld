@@ -25,4 +25,9 @@
     <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="1.0.2"></DotNetCliToolReference>
   </ItemGroup>
 
+  <Target Name="OurBuild" BeforeTargets="Publish">
+    <Exec Command="npm install" />
+    <Exec Command="bower install" />
+    <Exec Command="node node_modules\\gulp\\bin\\gulp.js minify" />
+  </Target>
 </Project>
