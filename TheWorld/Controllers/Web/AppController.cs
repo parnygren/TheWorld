@@ -33,6 +33,8 @@ namespace TheWorld.Controllers.Web
         [Authorize]
         public IActionResult Trips()
         {
+            ViewBag.GoogleKey = _config["Keys:GoogleKey"];
+            
             return View();
         }
 
